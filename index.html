@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/JembatanKuningan_2.js"></script>
+        <script src="data/JalanKabupatenKuningan_3.js"></script>
+        <script src="data/KondisiJalanKuningan_4.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-7.4466251395924346,107.97851274394505],[-6.577073212679087,109.5199788711459]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleMaps_0');
+        map.getPane('pane_GoogleMaps_0').style.zIndex = 400;
+        var layer_GoogleMaps_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleMaps_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleMaps_0;
+        map.addLayer(layer_GoogleMaps_0);
+        map.createPane('pane_GoogleHybrid_1');
+        map.getPane('pane_GoogleHybrid_1').style.zIndex = 401;
+        var layer_GoogleHybrid_1 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleHybrid_1',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleHybrid_1;
+        map.addLayer(layer_GoogleHybrid_1);
+        function pop_JembatanKuningan_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">No_Jembata</th>\
+                        <td>' + (feature.properties['No_Jembata'] !== null ? autolinker.link(feature.properties['No_Jembata'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nm_Jembata</th>\
+                        <td>' + (feature.properties['Nm_Jembata'] !== null ? autolinker.link(feature.properties['Nm_Jembata'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ruas_Jalan</th>\
+                        <td>' + (feature.properties['Ruas_Jalan'] !== null ? autolinker.link(feature.properties['Ruas_Jalan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tahun_Data</th>\
+                        <td>' + (feature.properties['Tahun_Data'] !== null ? autolinker.link(feature.properties['Tahun_Data'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Panjang</th>\
+                        <td>' + (feature.properties['Panjang'] !== null ? autolinker.link(feature.properties['Panjang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lebar</th>\
+                        <td>' + (feature.properties['Lebar'] !== null ? autolinker.link(feature.properties['Lebar'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jml_Bntang</th>\
+                        <td>' + (feature.properties['Jml_Bntang'] !== null ? autolinker.link(feature.properties['Jml_Bntang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">BgnAtas_Ni</th>\
+                        <td>' + (feature.properties['BgnAtas_Ni'] !== null ? autolinker.link(feature.properties['BgnAtas_Ni'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">BgnBwh_Nil</th>\
+                        <td>' + (feature.properties['BgnBwh_Nil'] !== null ? autolinker.link(feature.properties['BgnBwh_Nil'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Fondasi_Ni</th>\
+                        <td>' + (feature.properties['Fondasi_Ni'] !== null ? autolinker.link(feature.properties['Fondasi_Ni'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lantai_Nil</th>\
+                        <td>' + (feature.properties['Lantai_Nil'] !== null ? autolinker.link(feature.properties['Lantai_Nil'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">STA</th>\
+                        <td>' + (feature.properties['STA'] !== null ? autolinker.link(feature.properties['STA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['X'] !== null ? autolinker.link(feature.properties['X'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Y'] !== null ? autolinker.link(feature.properties['Y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_JembatanKuningan_2_0() {
+            return {
+                pane: 'pane_JembatanKuningan_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,30,42,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_JembatanKuningan_2');
+        map.getPane('pane_JembatanKuningan_2').style.zIndex = 402;
+        map.getPane('pane_JembatanKuningan_2').style['mix-blend-mode'] = 'normal';
+        var layer_JembatanKuningan_2 = new L.geoJson(json_JembatanKuningan_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_JembatanKuningan_2',
+            layerName: 'layer_JembatanKuningan_2',
+            pane: 'pane_JembatanKuningan_2',
+            onEachFeature: pop_JembatanKuningan_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_JembatanKuningan_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_JembatanKuningan_2);
+        map.addLayer(layer_JembatanKuningan_2);
+        function pop_JalanKabupatenKuningan_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nm_Ruas</th>\
+                        <td>' + (feature.properties['Nm_Ruas'] !== null ? autolinker.link(feature.properties['Nm_Ruas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Thn_Data</th>\
+                        <td>' + (feature.properties['Thn_Data'] !== null ? autolinker.link(feature.properties['Thn_Data'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kd_Inf</th>\
+                        <td>' + (feature.properties['Kd_Inf'] !== null ? autolinker.link(feature.properties['Kd_Inf'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Baik</th>\
+                        <td>' + (feature.properties['Kon_Baik'] !== null ? autolinker.link(feature.properties['Kon_Baik'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Sdg</th>\
+                        <td>' + (feature.properties['Kon_Sdg'] !== null ? autolinker.link(feature.properties['Kon_Sdg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Rgn</th>\
+                        <td>' + (feature.properties['Kon_Rgn'] !== null ? autolinker.link(feature.properties['Kon_Rgn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Rusak</th>\
+                        <td>' + (feature.properties['Kon_Rusak'] !== null ? autolinker.link(feature.properties['Kon_Rusak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Mntp</th>\
+                        <td>' + (feature.properties['Kon_Mntp'] !== null ? autolinker.link(feature.properties['Kon_Mntp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_T_Mntp</th>\
+                        <td>' + (feature.properties['Kon_T_Mntp'] !== null ? autolinker.link(feature.properties['Kon_T_Mntp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Panjang</th>\
+                        <td>' + (feature.properties['Panjang'] !== null ? autolinker.link(feature.properties['Panjang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lbr_Keras</th>\
+                        <td>' + (feature.properties['Lbr_Keras'] !== null ? autolinker.link(feature.properties['Lbr_Keras'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">LHR</th>\
+                        <td>' + (feature.properties['LHR'] !== null ? autolinker.link(feature.properties['LHR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Titik_Awal</th>\
+                        <td>' + (feature.properties['Titik_Awal'] !== null ? autolinker.link(feature.properties['Titik_Awal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Titik_Akhi</th>\
+                        <td>' + (feature.properties['Titik_Akhi'] !== null ? autolinker.link(feature.properties['Titik_Akhi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Aspal</th>\
+                        <td>' + (feature.properties['Aspal'] !== null ? autolinker.link(feature.properties['Aspal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Beton</th>\
+                        <td>' + (feature.properties['Beton'] !== null ? autolinker.link(feature.properties['Beton'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kerikil</th>\
+                        <td>' + (feature.properties['Kerikil'] !== null ? autolinker.link(feature.properties['Kerikil'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lapen</th>\
+                        <td>' + (feature.properties['Lapen'] !== null ? autolinker.link(feature.properties['Lapen'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tanah</th>\
+                        <td>' + (feature.properties['Tanah'] !== null ? autolinker.link(feature.properties['Tanah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_X_Aw</th>\
+                        <td>' + (feature.properties['Koord_X_Aw'] !== null ? autolinker.link(feature.properties['Koord_X_Aw'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_Y_Aw</th>\
+                        <td>' + (feature.properties['Koord_Y_Aw'] !== null ? autolinker.link(feature.properties['Koord_Y_Aw'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_X_Ak</th>\
+                        <td>' + (feature.properties['Koord_X_Ak'] !== null ? autolinker.link(feature.properties['Koord_X_Ak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_Y_Ak</th>\
+                        <td>' + (feature.properties['Koord_Y_Ak'] !== null ? autolinker.link(feature.properties['Koord_Y_Ak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Inf_Ruas</strong><br />' + (feature.properties['Inf_Ruas'] !== null ? autolinker.link(feature.properties['Inf_Ruas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_JalanKabupatenKuningan_3_0() {
+            return {
+                pane: 'pane_JalanKabupatenKuningan_3',
+                opacity: 1,
+                color: 'rgba(4,3,1,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_JalanKabupatenKuningan_3_1() {
+            return {
+                pane: 'pane_JalanKabupatenKuningan_3',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_JalanKabupatenKuningan_3');
+        map.getPane('pane_JalanKabupatenKuningan_3').style.zIndex = 403;
+        map.getPane('pane_JalanKabupatenKuningan_3').style['mix-blend-mode'] = 'normal';
+        var layer_JalanKabupatenKuningan_3 = new L.geoJson.multiStyle(json_JalanKabupatenKuningan_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_JalanKabupatenKuningan_3',
+            layerName: 'layer_JalanKabupatenKuningan_3',
+            pane: 'pane_JalanKabupatenKuningan_3',
+            onEachFeature: pop_JalanKabupatenKuningan_3,
+            styles: [style_JalanKabupatenKuningan_3_0,style_JalanKabupatenKuningan_3_1,]
+        });
+        bounds_group.addLayer(layer_JalanKabupatenKuningan_3);
+        map.addLayer(layer_JalanKabupatenKuningan_3);
+        function pop_KondisiJalanKuningan_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nm_Ruas</th>\
+                        <td>' + (feature.properties['Nm_Ruas'] !== null ? autolinker.link(feature.properties['Nm_Ruas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Thn_Data</th>\
+                        <td>' + (feature.properties['Thn_Data'] !== null ? autolinker.link(feature.properties['Thn_Data'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kd_Inf</th>\
+                        <td>' + (feature.properties['Kd_Inf'] !== null ? autolinker.link(feature.properties['Kd_Inf'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td>' + (feature.properties['Kecamatan'] !== null ? autolinker.link(feature.properties['Kecamatan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Desa_Kel</th>\
+                        <td>' + (feature.properties['Desa_Kel'] !== null ? autolinker.link(feature.properties['Desa_Kel'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">STA</th>\
+                        <td>' + (feature.properties['STA'] !== null ? autolinker.link(feature.properties['STA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kondisi_Jl</th>\
+                        <td>' + (feature.properties['Kondisi_Jl'] !== null ? autolinker.link(feature.properties['Kondisi_Jl'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_Mntp</th>\
+                        <td>' + (feature.properties['Kon_Mntp'] !== null ? autolinker.link(feature.properties['Kon_Mntp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kon_T_Mntp</th>\
+                        <td>' + (feature.properties['Kon_T_Mntp'] !== null ? autolinker.link(feature.properties['Kon_T_Mntp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Panjang</th>\
+                        <td>' + (feature.properties['Panjang'] !== null ? autolinker.link(feature.properties['Panjang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lbr_Keras</th>\
+                        <td>' + (feature.properties['Lbr_Keras'] !== null ? autolinker.link(feature.properties['Lbr_Keras'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_X_Aw</th>\
+                        <td>' + (feature.properties['Koord_X_Aw'] !== null ? autolinker.link(feature.properties['Koord_X_Aw'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_Y_Aw</th>\
+                        <td>' + (feature.properties['Koord_Y_Aw'] !== null ? autolinker.link(feature.properties['Koord_Y_Aw'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_X_Ak</th>\
+                        <td>' + (feature.properties['Koord_X_Ak'] !== null ? autolinker.link(feature.properties['Koord_X_Ak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Koord_Y_Ak</th>\
+                        <td>' + (feature.properties['Koord_Y_Ak'] !== null ? autolinker.link(feature.properties['Koord_Y_Ak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Inf_Ruas</strong><br />' + (feature.properties['Inf_Ruas'] !== null ? autolinker.link(feature.properties['Inf_Ruas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_KondisiJalanKuningan_4_0(feature) {
+            switch(String(feature.properties['Kondisi_Jl'])) {
+                case 'BAIK':
+                    return {
+                pane: 'pane_KondisiJalanKuningan_4',
+                opacity: 1,
+                color: 'rgba(50,225,11,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'RUSAK BERAT':
+                    return {
+                pane: 'pane_KondisiJalanKuningan_4',
+                opacity: 1,
+                color: 'rgba(233,2,6,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'RUSAK RINGAN':
+                    return {
+                pane: 'pane_KondisiJalanKuningan_4',
+                opacity: 1,
+                color: 'rgba(255,171,1,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'SEDANG':
+                    return {
+                pane: 'pane_KondisiJalanKuningan_4',
+                opacity: 1,
+                color: 'rgba(253,238,19,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_KondisiJalanKuningan_4',
+                opacity: 1,
+                color: 'rgba(4,3,1,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_KondisiJalanKuningan_4');
+        map.getPane('pane_KondisiJalanKuningan_4').style.zIndex = 404;
+        map.getPane('pane_KondisiJalanKuningan_4').style['mix-blend-mode'] = 'normal';
+        var layer_KondisiJalanKuningan_4 = new L.geoJson(json_KondisiJalanKuningan_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KondisiJalanKuningan_4',
+            layerName: 'layer_KondisiJalanKuningan_4',
+            pane: 'pane_KondisiJalanKuningan_4',
+            onEachFeature: pop_KondisiJalanKuningan_4,
+            style: style_KondisiJalanKuningan_4_0,
+        });
+        bounds_group.addLayer(layer_KondisiJalanKuningan_4);
+        map.addLayer(layer_KondisiJalanKuningan_4);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Kondisi Jalan Kuningan<br /><table><tr><td style="text-align: center;"><img src="legend/KondisiJalanKuningan_4_BAIK0.png" /></td><td>BAIK</td></tr><tr><td style="text-align: center;"><img src="legend/KondisiJalanKuningan_4_RUSAKBERAT1.png" /></td><td>RUSAK BERAT</td></tr><tr><td style="text-align: center;"><img src="legend/KondisiJalanKuningan_4_RUSAKRINGAN2.png" /></td><td>RUSAK RINGAN</td></tr><tr><td style="text-align: center;"><img src="legend/KondisiJalanKuningan_4_SEDANG3.png" /></td><td>SEDANG</td></tr><tr><td style="text-align: center;"><img src="legend/KondisiJalanKuningan_4_4.png" /></td><td></td></tr></table>': layer_KondisiJalanKuningan_4,'<img src="legend/JalanKabupatenKuningan_3.png" /> Jalan Kabupaten Kuningan': layer_JalanKabupatenKuningan_3,'<img src="legend/JembatanKuningan_2.png" /> Jembatan Kuningan': layer_JembatanKuningan_2,"Google Hybrid": layer_GoogleHybrid_1,"Google Maps": layer_GoogleMaps_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_JalanKabupatenKuningan_3,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Inf_Ruas'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Kd_Inf": "str","Nm_Ruas": "str","Nm_Jembata": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Kd_Inf = document.createElement('div');
+            div_Kd_Inf.id = "div_Kd_Inf";
+            div_Kd_Inf.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Kd_Inf);
+            sel_Kd_Inf = document.createElement('select');
+            sel_Kd_Inf.multiple = true;
+            sel_Kd_Inf.size = 10;
+            sel_Kd_Inf.id = "sel_Kd_Inf";
+            var Kd_Inf_options_str = "<option value='' unselected></option>";
+            sel_Kd_Inf.onchange = function(){filterFunc()};
+            Kd_Inf_options_str  += '<option value="NULL">NULL</option>';
+            Kd_Inf_options_str  += '<option value="22.20.01">22.20.01</option>';
+            Kd_Inf_options_str  += '<option value="22.20.02">22.20.02</option>';
+            Kd_Inf_options_str  += '<option value="22.20.03">22.20.03</option>';
+            Kd_Inf_options_str  += '<option value="22.20.04">22.20.04</option>';
+            Kd_Inf_options_str  += '<option value="22.20.05">22.20.05</option>';
+            Kd_Inf_options_str  += '<option value="22.20.06">22.20.06</option>';
+            Kd_Inf_options_str  += '<option value="22.20.07">22.20.07</option>';
+            Kd_Inf_options_str  += '<option value="22.20.08">22.20.08</option>';
+            Kd_Inf_options_str  += '<option value="22.20.09">22.20.09</option>';
+            Kd_Inf_options_str  += '<option value="22.20.10">22.20.10</option>';
+            Kd_Inf_options_str  += '<option value="22.20.100">22.20.100</option>';
+            Kd_Inf_options_str  += '<option value="22.20.101">22.20.101</option>';
+            Kd_Inf_options_str  += '<option value="22.20.102">22.20.102</option>';
+            Kd_Inf_options_str  += '<option value="22.20.103">22.20.103</option>';
+            Kd_Inf_options_str  += '<option value="22.20.104">22.20.104</option>';
+            Kd_Inf_options_str  += '<option value="22.20.105">22.20.105</option>';
+            Kd_Inf_options_str  += '<option value="22.20.106">22.20.106</option>';
+            Kd_Inf_options_str  += '<option value="22.20.107">22.20.107</option>';
+            Kd_Inf_options_str  += '<option value="22.20.108">22.20.108</option>';
+            Kd_Inf_options_str  += '<option value="22.20.109">22.20.109</option>';
+            Kd_Inf_options_str  += '<option value="22.20.11">22.20.11</option>';
+            Kd_Inf_options_str  += '<option value="22.20.110">22.20.110</option>';
+            Kd_Inf_options_str  += '<option value="22.20.111">22.20.111</option>';
+            Kd_Inf_options_str  += '<option value="22.20.112">22.20.112</option>';
+            Kd_Inf_options_str  += '<option value="22.20.113">22.20.113</option>';
+            Kd_Inf_options_str  += '<option value="22.20.114">22.20.114</option>';
+            Kd_Inf_options_str  += '<option value="22.20.116">22.20.116</option>';
+            Kd_Inf_options_str  += '<option value="22.20.117">22.20.117</option>';
+            Kd_Inf_options_str  += '<option value="22.20.118">22.20.118</option>';
+            Kd_Inf_options_str  += '<option value="22.20.119">22.20.119</option>';
+            Kd_Inf_options_str  += '<option value="22.20.12">22.20.12</option>';
+            Kd_Inf_options_str  += '<option value="22.20.120">22.20.120</option>';
+            Kd_Inf_options_str  += '<option value="22.20.121">22.20.121</option>';
+            Kd_Inf_options_str  += '<option value="22.20.122">22.20.122</option>';
+            Kd_Inf_options_str  += '<option value="22.20.123">22.20.123</option>';
+            Kd_Inf_options_str  += '<option value="22.20.125">22.20.125</option>';
+            Kd_Inf_options_str  += '<option value="22.20.126">22.20.126</option>';
+            Kd_Inf_options_str  += '<option value="22.20.127">22.20.127</option>';
+            Kd_Inf_options_str  += '<option value="22.20.128">22.20.128</option>';
+            Kd_Inf_options_str  += '<option value="22.20.129">22.20.129</option>';
+            Kd_Inf_options_str  += '<option value="22.20.13">22.20.13</option>';
+            Kd_Inf_options_str  += '<option value="22.20.130">22.20.130</option>';
+            Kd_Inf_options_str  += '<option value="22.20.131">22.20.131</option>';
+            Kd_Inf_options_str  += '<option value="22.20.132">22.20.132</option>';
+            Kd_Inf_options_str  += '<option value="22.20.133">22.20.133</option>';
+            Kd_Inf_options_str  += '<option value="22.20.134">22.20.134</option>';
+            Kd_Inf_options_str  += '<option value="22.20.135">22.20.135</option>';
+            Kd_Inf_options_str  += '<option value="22.20.136">22.20.136</option>';
+            Kd_Inf_options_str  += '<option value="22.20.137">22.20.137</option>';
+            Kd_Inf_options_str  += '<option value="22.20.138">22.20.138</option>';
+            Kd_Inf_options_str  += '<option value="22.20.139">22.20.139</option>';
+            Kd_Inf_options_str  += '<option value="22.20.14">22.20.14</option>';
+            Kd_Inf_options_str  += '<option value="22.20.140">22.20.140</option>';
+            Kd_Inf_options_str  += '<option value="22.20.141">22.20.141</option>';
+            Kd_Inf_options_str  += '<option value="22.20.142">22.20.142</option>';
+            Kd_Inf_options_str  += '<option value="22.20.143">22.20.143</option>';
+            Kd_Inf_options_str  += '<option value="22.20.144">22.20.144</option>';
+            Kd_Inf_options_str  += '<option value="22.20.145">22.20.145</option>';
+            Kd_Inf_options_str  += '<option value="22.20.146">22.20.146</option>';
+            Kd_Inf_options_str  += '<option value="22.20.147">22.20.147</option>';
+            Kd_Inf_options_str  += '<option value="22.20.148">22.20.148</option>';
+            Kd_Inf_options_str  += '<option value="22.20.149">22.20.149</option>';
+            Kd_Inf_options_str  += '<option value="22.20.15">22.20.15</option>';
+            Kd_Inf_options_str  += '<option value="22.20.151">22.20.151</option>';
+            Kd_Inf_options_str  += '<option value="22.20.152">22.20.152</option>';
+            Kd_Inf_options_str  += '<option value="22.20.153">22.20.153</option>';
+            Kd_Inf_options_str  += '<option value="22.20.154">22.20.154</option>';
+            Kd_Inf_options_str  += '<option value="22.20.155">22.20.155</option>';
+            Kd_Inf_options_str  += '<option value="22.20.156">22.20.156</option>';
+            Kd_Inf_options_str  += '<option value="22.20.158">22.20.158</option>';
+            Kd_Inf_options_str  += '<option value="22.20.159">22.20.159</option>';
+            Kd_Inf_options_str  += '<option value="22.20.16">22.20.16</option>';
+            Kd_Inf_options_str  += '<option value="22.20.160">22.20.160</option>';
+            Kd_Inf_options_str  += '<option value="22.20.161">22.20.161</option>';
+            Kd_Inf_options_str  += '<option value="22.20.162">22.20.162</option>';
+            Kd_Inf_options_str  += '<option value="22.20.163">22.20.163</option>';
+            Kd_Inf_options_str  += '<option value="22.20.164">22.20.164</option>';
+            Kd_Inf_options_str  += '<option value="22.20.166">22.20.166</option>';
+            Kd_Inf_options_str  += '<option value="22.20.167">22.20.167</option>';
+            Kd_Inf_options_str  += '<option value="22.20.168">22.20.168</option>';
+            Kd_Inf_options_str  += '<option value="22.20.169">22.20.169</option>';
+            Kd_Inf_options_str  += '<option value="22.20.17">22.20.17</option>';
+            Kd_Inf_options_str  += '<option value="22.20.170">22.20.170</option>';
+            Kd_Inf_options_str  += '<option value="22.20.171">22.20.171</option>';
+            Kd_Inf_options_str  += '<option value="22.20.172">22.20.172</option>';
+            Kd_Inf_options_str  += '<option value="22.20.176">22.20.176</option>';
+            Kd_Inf_options_str  += '<option value="22.20.177">22.20.177</option>';
+            Kd_Inf_options_str  += '<option value="22.20.179">22.20.179</option>';
+            Kd_Inf_options_str  += '<option value="22.20.18">22.20.18</option>';
+            Kd_Inf_options_str  += '<option value="22.20.180">22.20.180</option>';
+            Kd_Inf_options_str  += '<option value="22.20.181">22.20.181</option>';
+            Kd_Inf_options_str  += '<option value="22.20.182">22.20.182</option>';
+            Kd_Inf_options_str  += '<option value="22.20.183">22.20.183</option>';
+            Kd_Inf_options_str  += '<option value="22.20.184">22.20.184</option>';
+            Kd_Inf_options_str  += '<option value="22.20.185">22.20.185</option>';
+            Kd_Inf_options_str  += '<option value="22.20.186">22.20.186</option>';
+            Kd_Inf_options_str  += '<option value="22.20.187">22.20.187</option>';
+            Kd_Inf_options_str  += '<option value="22.20.188">22.20.188</option>';
+            Kd_Inf_options_str  += '<option value="22.20.19">22.20.19</option>';
+            Kd_Inf_options_str  += '<option value="22.20.194">22.20.194</option>';
+            Kd_Inf_options_str  += '<option value="22.20.20">22.20.20</option>';
+            Kd_Inf_options_str  += '<option value="22.20.208">22.20.208</option>';
+            Kd_Inf_options_str  += '<option value="22.20.209">22.20.209</option>';
+            Kd_Inf_options_str  += '<option value="22.20.21">22.20.21</option>';
+            Kd_Inf_options_str  += '<option value="22.20.210">22.20.210</option>';
+            Kd_Inf_options_str  += '<option value="22.20.211">22.20.211</option>';
+            Kd_Inf_options_str  += '<option value="22.20.212">22.20.212</option>';
+            Kd_Inf_options_str  += '<option value="22.20.217">22.20.217</option>';
+            Kd_Inf_options_str  += '<option value="22.20.218">22.20.218</option>';
+            Kd_Inf_options_str  += '<option value="22.20.219">22.20.219</option>';
+            Kd_Inf_options_str  += '<option value="22.20.22">22.20.22</option>';
+            Kd_Inf_options_str  += '<option value="22.20.220">22.20.220</option>';
+            Kd_Inf_options_str  += '<option value="22.20.223">22.20.223</option>';
+            Kd_Inf_options_str  += '<option value="22.20.224">22.20.224</option>';
+            Kd_Inf_options_str  += '<option value="22.20.226">22.20.226</option>';
+            Kd_Inf_options_str  += '<option value="22.20.228">22.20.228</option>';
+            Kd_Inf_options_str  += '<option value="22.20.23">22.20.23</option>';
+            Kd_Inf_options_str  += '<option value="22.20.230">22.20.230</option>';
+            Kd_Inf_options_str  += '<option value="22.20.231">22.20.231</option>';
+            Kd_Inf_options_str  += '<option value="22.20.232">22.20.232</option>';
+            Kd_Inf_options_str  += '<option value="22.20.233">22.20.233</option>';
+            Kd_Inf_options_str  += '<option value="22.20.236">22.20.236</option>';
+            Kd_Inf_options_str  += '<option value="22.20.239">22.20.239</option>';
+            Kd_Inf_options_str  += '<option value="22.20.24">22.20.24</option>';
+            Kd_Inf_options_str  += '<option value="22.20.240">22.20.240</option>';
+            Kd_Inf_options_str  += '<option value="22.20.244">22.20.244</option>';
+            Kd_Inf_options_str  += '<option value="22.20.246">22.20.246</option>';
+            Kd_Inf_options_str  += '<option value="22.20.249">22.20.249</option>';
+            Kd_Inf_options_str  += '<option value="22.20.25">22.20.25</option>';
+            Kd_Inf_options_str  += '<option value="22.20.259">22.20.259</option>';
+            Kd_Inf_options_str  += '<option value="22.20.26">22.20.26</option>';
+            Kd_Inf_options_str  += '<option value="22.20.261">22.20.261</option>';
+            Kd_Inf_options_str  += '<option value="22.20.263">22.20.263</option>';
+            Kd_Inf_options_str  += '<option value="22.20.264">22.20.264</option>';
+            Kd_Inf_options_str  += '<option value="22.20.265">22.20.265</option>';
+            Kd_Inf_options_str  += '<option value="22.20.266">22.20.266</option>';
+            Kd_Inf_options_str  += '<option value="22.20.267">22.20.267</option>';
+            Kd_Inf_options_str  += '<option value="22.20.268">22.20.268</option>';
+            Kd_Inf_options_str  += '<option value="22.20.269">22.20.269</option>';
+            Kd_Inf_options_str  += '<option value="22.20.27">22.20.27</option>';
+            Kd_Inf_options_str  += '<option value="22.20.276">22.20.276</option>';
+            Kd_Inf_options_str  += '<option value="22.20.28">22.20.28</option>';
+            Kd_Inf_options_str  += '<option value="22.20.289">22.20.289</option>';
+            Kd_Inf_options_str  += '<option value="22.20.29">22.20.29</option>';
+            Kd_Inf_options_str  += '<option value="22.20.290">22.20.290</option>';
+            Kd_Inf_options_str  += '<option value="22.20.291">22.20.291</option>';
+            Kd_Inf_options_str  += '<option value="22.20.292">22.20.292</option>';
+            Kd_Inf_options_str  += '<option value="22.20.293">22.20.293</option>';
+            Kd_Inf_options_str  += '<option value="22.20.294">22.20.294</option>';
+            Kd_Inf_options_str  += '<option value="22.20.295">22.20.295</option>';
+            Kd_Inf_options_str  += '<option value="22.20.296">22.20.296</option>';
+            Kd_Inf_options_str  += '<option value="22.20.297">22.20.297</option>';
+            Kd_Inf_options_str  += '<option value="22.20.298">22.20.298</option>';
+            Kd_Inf_options_str  += '<option value="22.20.299">22.20.299</option>';
+            Kd_Inf_options_str  += '<option value="22.20.30">22.20.30</option>';
+            Kd_Inf_options_str  += '<option value="22.20.300">22.20.300</option>';
+            Kd_Inf_options_str  += '<option value="22.20.301">22.20.301</option>';
+            Kd_Inf_options_str  += '<option value="22.20.302">22.20.302</option>';
+            Kd_Inf_options_str  += '<option value="22.20.303">22.20.303</option>';
+            Kd_Inf_options_str  += '<option value="22.20.304">22.20.304</option>';
+            Kd_Inf_options_str  += '<option value="22.20.305">22.20.305</option>';
+            Kd_Inf_options_str  += '<option value="22.20.306">22.20.306</option>';
+            Kd_Inf_options_str  += '<option value="22.20.307">22.20.307</option>';
+            Kd_Inf_options_str  += '<option value="22.20.308">22.20.308</option>';
+            Kd_Inf_options_str  += '<option value="22.20.309">22.20.309</option>';
+            Kd_Inf_options_str  += '<option value="22.20.31">22.20.31</option>';
+            Kd_Inf_options_str  += '<option value="22.20.310">22.20.310</option>';
+            Kd_Inf_options_str  += '<option value="22.20.311">22.20.311</option>';
+            Kd_Inf_options_str  += '<option value="22.20.312">22.20.312</option>';
+            Kd_Inf_options_str  += '<option value="22.20.313">22.20.313</option>';
+            Kd_Inf_options_str  += '<option value="22.20.314">22.20.314</option>';
+            Kd_Inf_options_str  += '<option value="22.20.315">22.20.315</option>';
+            Kd_Inf_options_str  += '<option value="22.20.316">22.20.316</option>';
+            Kd_Inf_options_str  += '<option value="22.20.317">22.20.317</option>';
+            Kd_Inf_options_str  += '<option value="22.20.318">22.20.318</option>';
+            Kd_Inf_options_str  += '<option value="22.20.319">22.20.319</option>';
+            Kd_Inf_options_str  += '<option value="22.20.320">22.20.320</option>';
+            Kd_Inf_options_str  += '<option value="22.20.321">22.20.321</option>';
+            Kd_Inf_options_str  += '<option value="22.20.322">22.20.322</option>';
+            Kd_Inf_options_str  += '<option value="22.20.323">22.20.323</option>';
+            Kd_Inf_options_str  += '<option value="22.20.324">22.20.324</option>';
+            Kd_Inf_options_str  += '<option value="22.20.325">22.20.325</option>';
+            Kd_Inf_options_str  += '<option value="22.20.326">22.20.326</option>';
+            Kd_Inf_options_str  += '<option value="22.20.327">22.20.327</option>';
+            Kd_Inf_options_str  += '<option value="22.20.329">22.20.329</option>';
+            Kd_Inf_options_str  += '<option value="22.20.330">22.20.330</option>';
+            Kd_Inf_options_str  += '<option value="22.20.331">22.20.331</option>';
+            Kd_Inf_options_str  += '<option value="22.20.332">22.20.332</option>';
+            Kd_Inf_options_str  += '<option value="22.20.333">22.20.333</option>';
+            Kd_Inf_options_str  += '<option value="22.20.334">22.20.334</option>';
+            Kd_Inf_options_str  += '<option value="22.20.336">22.20.336</option>';
+            Kd_Inf_options_str  += '<option value="22.20.337">22.20.337</option>';
+            Kd_Inf_options_str  += '<option value="22.20.338">22.20.338</option>';
+            Kd_Inf_options_str  += '<option value="22.20.34">22.20.34</option>';
+            Kd_Inf_options_str  += '<option value="22.20.35">22.20.35</option>';
+            Kd_Inf_options_str  += '<option value="22.20.36">22.20.36</option>';
+            Kd_Inf_options_str  += '<option value="22.20.37">22.20.37</option>';
+            Kd_Inf_options_str  += '<option value="22.20.38">22.20.38</option>';
+            Kd_Inf_options_str  += '<option value="22.20.39">22.20.39</option>';
+            Kd_Inf_options_str  += '<option value="22.20.40">22.20.40</option>';
+            Kd_Inf_options_str  += '<option value="22.20.41">22.20.41</option>';
+            Kd_Inf_options_str  += '<option value="22.20.42">22.20.42</option>';
+            Kd_Inf_options_str  += '<option value="22.20.43">22.20.43</option>';
+            Kd_Inf_options_str  += '<option value="22.20.44">22.20.44</option>';
+            Kd_Inf_options_str  += '<option value="22.20.45">22.20.45</option>';
+            Kd_Inf_options_str  += '<option value="22.20.46">22.20.46</option>';
+            Kd_Inf_options_str  += '<option value="22.20.47">22.20.47</option>';
+            Kd_Inf_options_str  += '<option value="22.20.48">22.20.48</option>';
+            Kd_Inf_options_str  += '<option value="22.20.49">22.20.49</option>';
+            Kd_Inf_options_str  += '<option value="22.20.52">22.20.52</option>';
+            Kd_Inf_options_str  += '<option value="22.20.53">22.20.53</option>';
+            Kd_Inf_options_str  += '<option value="22.20.54">22.20.54</option>';
+            Kd_Inf_options_str  += '<option value="22.20.56">22.20.56</option>';
+            Kd_Inf_options_str  += '<option value="22.20.57">22.20.57</option>';
+            Kd_Inf_options_str  += '<option value="22.20.58">22.20.58</option>';
+            Kd_Inf_options_str  += '<option value="22.20.59">22.20.59</option>';
+            Kd_Inf_options_str  += '<option value="22.20.60">22.20.60</option>';
+            Kd_Inf_options_str  += '<option value="22.20.61">22.20.61</option>';
+            Kd_Inf_options_str  += '<option value="22.20.62">22.20.62</option>';
+            Kd_Inf_options_str  += '<option value="22.20.63">22.20.63</option>';
+            Kd_Inf_options_str  += '<option value="22.20.64">22.20.64</option>';
+            Kd_Inf_options_str  += '<option value="22.20.65">22.20.65</option>';
+            Kd_Inf_options_str  += '<option value="22.20.66">22.20.66</option>';
+            Kd_Inf_options_str  += '<option value="22.20.67">22.20.67</option>';
+            Kd_Inf_options_str  += '<option value="22.20.68">22.20.68</option>';
+            Kd_Inf_options_str  += '<option value="22.20.69">22.20.69</option>';
+            Kd_Inf_options_str  += '<option value="22.20.70">22.20.70</option>';
+            Kd_Inf_options_str  += '<option value="22.20.71">22.20.71</option>';
+            Kd_Inf_options_str  += '<option value="22.20.72">22.20.72</option>';
+            Kd_Inf_options_str  += '<option value="22.20.73">22.20.73</option>';
+            Kd_Inf_options_str  += '<option value="22.20.74">22.20.74</option>';
+            Kd_Inf_options_str  += '<option value="22.20.75">22.20.75</option>';
+            Kd_Inf_options_str  += '<option value="22.20.76">22.20.76</option>';
+            Kd_Inf_options_str  += '<option value="22.20.77">22.20.77</option>';
+            Kd_Inf_options_str  += '<option value="22.20.78">22.20.78</option>';
+            Kd_Inf_options_str  += '<option value="22.20.79">22.20.79</option>';
+            Kd_Inf_options_str  += '<option value="22.20.80">22.20.80</option>';
+            Kd_Inf_options_str  += '<option value="22.20.81">22.20.81</option>';
+            Kd_Inf_options_str  += '<option value="22.20.82">22.20.82</option>';
+            Kd_Inf_options_str  += '<option value="22.20.83">22.20.83</option>';
+            Kd_Inf_options_str  += '<option value="22.20.84">22.20.84</option>';
+            Kd_Inf_options_str  += '<option value="22.20.85">22.20.85</option>';
+            Kd_Inf_options_str  += '<option value="22.20.86">22.20.86</option>';
+            Kd_Inf_options_str  += '<option value="22.20.87">22.20.87</option>';
+            Kd_Inf_options_str  += '<option value="22.20.88">22.20.88</option>';
+            Kd_Inf_options_str  += '<option value="22.20.89">22.20.89</option>';
+            Kd_Inf_options_str  += '<option value="22.20.90">22.20.90</option>';
+            Kd_Inf_options_str  += '<option value="22.20.91">22.20.91</option>';
+            Kd_Inf_options_str  += '<option value="22.20.92">22.20.92</option>';
+            Kd_Inf_options_str  += '<option value="22.20.93">22.20.93</option>';
+            Kd_Inf_options_str  += '<option value="22.20.94">22.20.94</option>';
+            Kd_Inf_options_str  += '<option value="22.20.95">22.20.95</option>';
+            Kd_Inf_options_str  += '<option value="22.20.96">22.20.96</option>';
+            Kd_Inf_options_str  += '<option value="22.20.97">22.20.97</option>';
+            Kd_Inf_options_str  += '<option value="22.20.98">22.20.98</option>';
+            Kd_Inf_options_str  += '<option value="22.20.99">22.20.99</option>';
+            sel_Kd_Inf.innerHTML = Kd_Inf_options_str;
+            div_Kd_Inf.appendChild(sel_Kd_Inf);
+            var lab_Kd_Inf = document.createElement('div');
+            lab_Kd_Inf.innerHTML = 'Kd_Inf';
+            lab_Kd_Inf.className = 'filterlabel';
+            div_Kd_Inf.appendChild(lab_Kd_Inf);
+            var reset_Kd_Inf = document.createElement('div');
+            reset_Kd_Inf.innerHTML = 'clear filter';
+            reset_Kd_Inf.className = 'filterlabel';
+            reset_Kd_Inf.onclick = function() {
+                var options = document.getElementById("sel_Kd_Inf").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Kd_Inf.appendChild(reset_Kd_Inf);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Nm_Ruas = document.createElement('div');
+            div_Nm_Ruas.id = "div_Nm_Ruas";
+            div_Nm_Ruas.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Nm_Ruas);
+            sel_Nm_Ruas = document.createElement('select');
+            sel_Nm_Ruas.multiple = true;
+            sel_Nm_Ruas.size = 10;
+            sel_Nm_Ruas.id = "sel_Nm_Ruas";
+            var Nm_Ruas_options_str = "<option value='' unselected></option>";
+            sel_Nm_Ruas.onchange = function(){filterFunc()};
+            Nm_Ruas_options_str  += '<option value="Awirarangan - Sp Windusengkahan">Awirarangan - Sp Windusengkahan</option>';
+            Nm_Ruas_options_str  += '<option value="Babakanreuma - Sp . Ancaran">Babakanreuma - Sp . Ancaran</option>';
+            Nm_Ruas_options_str  += '<option value="Babatan - Sp.Bayuning/Kalpataru">Babatan - Sp.Bayuning/Kalpataru</option>';
+            Nm_Ruas_options_str  += '<option value="Balong - Garawangi">Balong - Garawangi</option>';
+            Nm_Ruas_options_str  += '<option value="Bangunjaya - Leuwikasba (Bts.Ciamis)">Bangunjaya - Leuwikasba (Bts.Ciamis)</option>';
+            Nm_Ruas_options_str  += '<option value="Baok - Andamui">Baok - Andamui</option>';
+            Nm_Ruas_options_str  += '<option value="Bendungan - Sp. Langseb">Bendungan - Sp. Langseb</option>';
+            Nm_Ruas_options_str  += '<option value="Bojong - Panawuan">Bojong - Panawuan</option>';
+            Nm_Ruas_options_str  += '<option value="Bojong - Sp. Linggajati">Bojong - Sp. Linggajati</option>';
+            Nm_Ruas_options_str  += '<option value="Caracas (Sp. Jl. Lingkar Timur)- Cibuntu">Caracas (Sp. Jl. Lingkar Timur)- Cibuntu</option>';
+            Nm_Ruas_options_str  += '<option value="Caracas - Pakembangan">Caracas - Pakembangan</option>';
+            Nm_Ruas_options_str  += '<option value="Ciawigebang - Suganangan">Ciawigebang - Suganangan</option>';
+            Nm_Ruas_options_str  += '<option value="Ciawilor - Pangkalan">Ciawilor - Pangkalan</option>';
+            Nm_Ruas_options_str  += '<option value="Ciberung - Bagawat">Ciberung - Bagawat</option>';
+            Nm_Ruas_options_str  += '<option value="Cibeureum - Kertawinangun">Cibeureum - Kertawinangun</option>';
+            Nm_Ruas_options_str  += '<option value="Cibingbin - Sindangjawa">Cibingbin - Sindangjawa</option>';
+            Nm_Ruas_options_str  += '<option value="Cidahu - Datar">Cidahu - Datar</option>';
+            Nm_Ruas_options_str  += '<option value="Cidahu - Luragung">Cidahu - Luragung</option>';
+            Nm_Ruas_options_str  += '<option value="Cigadung - Babakan">Cigadung - Babakan</option>';
+            Nm_Ruas_options_str  += '<option value="Cigugur - Puncak">Cigugur - Puncak</option>';
+            Nm_Ruas_options_str  += '<option value="Cihaur - Susukan">Cihaur - Susukan</option>';
+            Nm_Ruas_options_str  += '<option value="Cihideung Hilir - Sp. Cipancur">Cihideung Hilir - Sp. Cipancur</option>';
+            Nm_Ruas_options_str  += '<option value="Cihirup - Sukaraja">Cihirup - Sukaraja</option>';
+            Nm_Ruas_options_str  += '<option value="Cijemit - Gunungmanik">Cijemit - Gunungmanik</option>';
+            Nm_Ruas_options_str  += '<option value="Cikadu - Kertawirama">Cikadu - Kertawirama</option>';
+            Nm_Ruas_options_str  += '<option value="Cilaja (Sp. Jl. Lingkar Timur) - Sp.Babakan Reuma/ Jl, Baru">Cilaja (Sp. Jl. Lingkar Timur) - Sp.Babakan Reuma/ Jl, Baru</option>';
+            Nm_Ruas_options_str  += '<option value="Cilebak - Bungur Beres">Cilebak - Bungur Beres</option>';
+            Nm_Ruas_options_str  += '<option value="Cilebak - Legokherang">Cilebak - Legokherang</option>';
+            Nm_Ruas_options_str  += '<option value="Cileuya - Ciwaru">Cileuya - Ciwaru</option>';
+            Nm_Ruas_options_str  += '<option value="Cilimus (Sp. Jl. Lingkar Timur) - Cibuntu">Cilimus (Sp. Jl. Lingkar Timur) - Cibuntu</option>';
+            Nm_Ruas_options_str  += '<option value="Ciloa - Karamatmulya">Ciloa - Karamatmulya</option>';
+            Nm_Ruas_options_str  += '<option value="Cimahi - Cibeureum">Cimahi - Cibeureum</option>';
+            Nm_Ruas_options_str  += '<option value="Cimenga - Kondang Mekar">Cimenga - Kondang Mekar</option>';
+            Nm_Ruas_options_str  += '<option value="Cinagara - Ciporang">Cinagara - Ciporang</option>';
+            Nm_Ruas_options_str  += '<option value="Ciniru - Cageur">Ciniru - Cageur</option>';
+            Nm_Ruas_options_str  += '<option value="Cipari - Cisantana">Cipari - Cisantana</option>';
+            Nm_Ruas_options_str  += '<option value="Cipasung - Sakerta Barat">Cipasung - Sakerta Barat</option>';
+            Nm_Ruas_options_str  += '<option value="Cipasung - Subang">Cipasung - Subang</option>';
+            Nm_Ruas_options_str  += '<option value="Cipicung - Suganangan">Cipicung - Suganangan</option>';
+            Nm_Ruas_options_str  += '<option value="Cirahayu - Walaharcageur">Cirahayu - Walaharcageur</option>';
+            Nm_Ruas_options_str  += '<option value="Cirea - Pasawahan">Cirea - Pasawahan</option>';
+            Nm_Ruas_options_str  += '<option value="Citapen - Pasir Agung">Citapen - Pasir Agung</option>';
+            Nm_Ruas_options_str  += '<option value="Datar - Benda">Datar - Benda</option>';
+            Nm_Ruas_options_str  += '<option value="Gandasoli - Cibentang">Gandasoli - Cibentang</option>';
+            Nm_Ruas_options_str  += '<option value="Garatengah (Sp. Jl. Lingkar Timur) - Japara">Garatengah (Sp. Jl. Lingkar Timur) - Japara</option>';
+            Nm_Ruas_options_str  += '<option value="Garawangi - Tambakbaya">Garawangi - Tambakbaya</option>';
+            Nm_Ruas_options_str  += '<option value="Gereba - Kasturi">Gereba - Kasturi</option>';
+            Nm_Ruas_options_str  += '<option value="Gunung Sirah-Cipulus (Bts.Majalengka)">Gunung Sirah-Cipulus (Bts.Majalengka)</option>';
+            Nm_Ruas_options_str  += '<option value="Jagara - Sakerta Barat">Jagara - Sakerta Barat</option>';
+            Nm_Ruas_options_str  += '<option value="Jalaksana - Sp. Pajambon">Jalaksana - Sp. Pajambon</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan  Moh. Toha">Jalan  Moh. Toha</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Afidik">Jalan Afidik</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Ahmad Yani">Jalan Ahmad Yani</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Ajid">Jalan Ajid</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Aria Kemuning">Jalan Aria Kemuning</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Aruji Kartawinata">Jalan Aruji Kartawinata</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Aruji-Kepuh">Jalan Aruji-Kepuh</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Ciharendong - Cirendang">Jalan Ciharendong - Cirendang</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Cijoho - Sindangsari (Sp. Jl. Lingkar Timur Selatan)">Jalan Cijoho - Sindangsari (Sp. Jl. Lingkar Timur Selatan)</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Cut Nyak Dien">Jalan Cut Nyak Dien</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Dewi Sartika">Jalan Dewi Sartika</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Dipati Ewangga">Jalan Dipati Ewangga</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Eyang Weri">Jalan Eyang Weri</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Holil">Jalan Holil</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Ir Soekarno (Sp.Purwawinangun- Cirendang)">Jalan Ir Soekarno (Sp.Purwawinangun- Cirendang)</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Juanda">Jalan Juanda</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Kepuh - Komplek Pasar Baru">Jalan Kepuh - Komplek Pasar Baru</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Komplek Kebun Raya Kuningan">Jalan Komplek Kebun Raya Kuningan</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Komplek Pasarbaru">Jalan Komplek Pasarbaru</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Komplek Perumnas Ciporang">Jalan Komplek Perumnas Ciporang</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Langlang Buana">Jalan Langlang Buana</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Mangkubumi">Jalan Mangkubumi</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Moh.Hatta (Sp.Purwawinangun - Cijoho)">Jalan Moh.Hatta (Sp.Purwawinangun - Cijoho)</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Otista">Jalan Otista</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Perjuangan (Komplek DPRD/Perkantoran)">Jalan Perjuangan (Komplek DPRD/Perkantoran)</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Pramuka">Jalan Pramuka</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Ramajaksa">Jalan Ramajaksa</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Salawati">Jalan Salawati</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Siliwangi">Jalan Siliwangi</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Stadion">Jalan Stadion</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Sudirman">Jalan Sudirman</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Syeh Maulana Akbar">Jalan Syeh Maulana Akbar</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Taman Purbakala">Jalan Taman Purbakala</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Veteran">Jalan Veteran</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Wahyu">Jalan Wahyu</option>';
+            Nm_Ruas_options_str  += '<option value="Jalan Wijaya">Jalan Wijaya</option>';
+            Nm_Ruas_options_str  += '<option value="Jambar - Karangsari">Jambar - Karangsari</option>';
+            Nm_Ruas_options_str  += '<option value="Japara - Sindangbarang">Japara - Sindangbarang</option>';
+            Nm_Ruas_options_str  += '<option value="Japara - Sp. Timbang">Japara - Sp. Timbang</option>';
+            Nm_Ruas_options_str  += '<option value="Jl. Ir Soekarno - Sp. Gunungkeling (Surya Darma Ali)">Jl. Ir Soekarno - Sp. Gunungkeling (Surya Darma Ali)</option>';
+            Nm_Ruas_options_str  += '<option value="Jl. Komplek Perkantoran Pemda">Jl. Komplek Perkantoran Pemda</option>';
+            Nm_Ruas_options_str  += '<option value="Jl.Sp Cigintung - Sp Perum Cigintung">Jl.Sp Cigintung - Sp Perum Cigintung</option>';
+            Nm_Ruas_options_str  += '<option value="Kaduela - Talagaremis">Kaduela - Talagaremis</option>';
+            Nm_Ruas_options_str  += '<option value="Kadugede - Ciniru">Kadugede - Ciniru</option>';
+            Nm_Ruas_options_str  += '<option value="Kadugede - Sp.Sukamulya (Kalpataru)">Kadugede - Sp.Sukamulya (Kalpataru)</option>';
+            Nm_Ruas_options_str  += '<option value="Kadurama - Kalimangis Kulon">Kadurama - Kalimangis Kulon</option>';
+            Nm_Ruas_options_str  += '<option value="Kalimanggis Wetan - Cieurih">Kalimanggis Wetan - Cieurih</option>';
+            Nm_Ruas_options_str  += '<option value="Karangkancana -Sp.Cimara (Puskesmas)">Karangkancana -Sp.Cimara (Puskesmas)</option>';
+            Nm_Ruas_options_str  += '<option value="Kd. Cikandang - Bts. Kramat Mulya">Kd. Cikandang - Bts. Kramat Mulya</option>';
+            Nm_Ruas_options_str  += '<option value="Kedungarum - Cilaja">Kedungarum - Cilaja</option>';
+            Nm_Ruas_options_str  += '<option value="Kedungarum - Kertawangunan (Jl. Moch Yamin)">Kedungarum - Kertawangunan (Jl. Moch Yamin)</option>';
+            Nm_Ruas_options_str  += '<option value="Kembanglopang - Kutaagung">Kembanglopang - Kutaagung</option>';
+            Nm_Ruas_options_str  += '<option value="Keramatmulya - Nanggerang">Keramatmulya - Nanggerang</option>';
+            Nm_Ruas_options_str  += '<option value="Kertawana - Sp. Cihirup">Kertawana - Sp. Cihirup</option>';
+            Nm_Ruas_options_str  += '<option value="Kertawangunan - Taraju">Kertawangunan - Taraju</option>';
+            Nm_Ruas_options_str  += '<option value="Kertawinangun - Bunder">Kertawinangun - Bunder</option>';
+            Nm_Ruas_options_str  += '<option value="Kramatwangi - Sukaimut">Kramatwangi - Sukaimut</option>';
+            Nm_Ruas_options_str  += '<option value="Kramatwangi - Tambakbaya">Kramatwangi - Tambakbaya</option>';
+            Nm_Ruas_options_str  += '<option value="Kuningan (Jl.Sudirman) - Garawangi">Kuningan (Jl.Sudirman) - Garawangi</option>';
+            Nm_Ruas_options_str  += '<option value="Kuningan - Citangtu">Kuningan - Citangtu</option>';
+            Nm_Ruas_options_str  += '<option value="Langseb - Dukuh Tengah">Langseb - Dukuh Tengah</option>';
+            Nm_Ruas_options_str  += '<option value="Lebakwangi - Cipetir">Lebakwangi - Cipetir</option>';
+            Nm_Ruas_options_str  += '<option value="Linggajati - Linggamekar">Linggajati - Linggamekar</option>';
+            Nm_Ruas_options_str  += '<option value="Linggajati - Setianegara">Linggajati - Setianegara</option>';
+            Nm_Ruas_options_str  += '<option value="Luragung - Ciwaru">Luragung - Ciwaru</option>';
+            Nm_Ruas_options_str  += '<option value="Mandirancan - Matanghaji">Mandirancan - Matanghaji</option>';
+            Nm_Ruas_options_str  += '<option value="Mandirancan - Seda">Mandirancan - Seda</option>';
+            Nm_Ruas_options_str  += '<option value="Mandirancan - Sp. Kertawinangun">Mandirancan - Sp. Kertawinangun</option>';
+            Nm_Ruas_options_str  += '<option value="Manis Kidul - Cibulan">Manis Kidul - Cibulan</option>';
+            Nm_Ruas_options_str  += '<option value="Manis Kidul - Manis Lor">Manis Kidul - Manis Lor</option>';
+            Nm_Ruas_options_str  += '<option value="Matanghaji - Kaduela">Matanghaji - Kaduela</option>';
+            Nm_Ruas_options_str  += '<option value="Mekarwangi - Lebak Wangi">Mekarwangi - Lebak Wangi</option>';
+            Nm_Ruas_options_str  += '<option value="Mungkaldatar - Rambatan">Mungkaldatar - Rambatan</option>';
+            Nm_Ruas_options_str  += '<option value="Nusaherang - Kadugede">Nusaherang - Kadugede</option>';
+            Nm_Ruas_options_str  += '<option value="Nusaherang - Sp . Bakom">Nusaherang - Sp . Bakom</option>';
+            Nm_Ruas_options_str  += '<option value="Nusaherang - Windusari">Nusaherang - Windusari</option>';
+            Nm_Ruas_options_str  += '<option value="Oleced - Tambakbaya">Oleced - Tambakbaya</option>';
+            Nm_Ruas_options_str  += '<option value="Padahurip - Selajambe">Padahurip - Selajambe</option>';
+            Nm_Ruas_options_str  += '<option value="Padamenak - Garatengah (Sp. Jl. Lingkar Timur)">Padamenak - Garatengah (Sp. Jl. Lingkar Timur)</option>';
+            Nm_Ruas_options_str  += '<option value="Padarama - Sp. Kalimati">Padarama - Sp. Kalimati</option>';
+            Nm_Ruas_options_str  += '<option value="Padarek - Kedungarum">Padarek - Kedungarum</option>';
+            Nm_Ruas_options_str  += '<option value="Pajawan Kidul - Sp. Mancagar">Pajawan Kidul - Sp. Mancagar</option>';
+            Nm_Ruas_options_str  += '<option value="Pakapasan Hilir - Citapen">Pakapasan Hilir - Citapen</option>';
+            Nm_Ruas_options_str  += '<option value="Pamijahan- Kalimanggis Kulon">Pamijahan- Kalimanggis Kulon</option>';
+            Nm_Ruas_options_str  += '<option value="Pamulihan - Sp.Legokherang">Pamulihan - Sp.Legokherang</option>';
+            Nm_Ruas_options_str  += '<option value="Pancalang - Tarikolot">Pancalang - Tarikolot</option>';
+            Nm_Ruas_options_str  += '<option value="Pancalang - Tenjolayar">Pancalang - Tenjolayar</option>';
+            Nm_Ruas_options_str  += '<option value="Parung - Gunungsirah">Parung - Gunungsirah</option>';
+            Nm_Ruas_options_str  += '<option value="Pasawahan - Mandala">Pasawahan - Mandala</option>';
+            Nm_Ruas_options_str  += '<option value="Pasawahan - Padabeunghar (Bts.Kab)">Pasawahan - Padabeunghar (Bts.Kab)</option>';
+            Nm_Ruas_options_str  += '<option value="Patalagan - Sumbakeling">Patalagan - Sumbakeling</option>';
+            Nm_Ruas_options_str  += '<option value="Purwasari - Ciniru">Purwasari - Ciniru</option>';
+            Nm_Ruas_options_str  += '<option value="Purwasari - Sindangagung">Purwasari - Sindangagung</option>';
+            Nm_Ruas_options_str  += '<option value="Randobawailir - Randobawagirang">Randobawailir - Randobawagirang</option>';
+            Nm_Ruas_options_str  += '<option value="Randobawailir - Sp. Kertawinangun">Randobawailir - Sp. Kertawinangun</option>';
+            Nm_Ruas_options_str  += '<option value="Sadamantra - Babakan Mulya">Sadamantra - Babakan Mulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sangkanmulya (Sp. Jl. Lingkar Timur) - Japara">Sangkanmulya (Sp. Jl. Lingkar Timur) - Japara</option>';
+            Nm_Ruas_options_str  += '<option value="Sarewu - Cipinang">Sarewu - Cipinang</option>';
+            Nm_Ruas_options_str  += '<option value="Sembawa - Sidamulya">Sembawa - Sidamulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sidaraja - Babakan Reuma">Sidaraja - Babakan Reuma</option>';
+            Nm_Ruas_options_str  += '<option value="Sindang Agung - Kertaungaran">Sindang Agung - Kertaungaran</option>';
+            Nm_Ruas_options_str  += '<option value="Sindangkempeng - Danalampah">Sindangkempeng - Danalampah</option>';
+            Nm_Ruas_options_str  += '<option value="Sindangkempeng - Sarewu">Sindangkempeng - Sarewu</option>';
+            Nm_Ruas_options_str  += '<option value="Sindangsari - Karangtawang (Jln.Eyang Hasan Maulani)">Sindangsari - Karangtawang (Jln.Eyang Hasan Maulani)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp .Ciloa - Sp. Kasturi">Sp .Ciloa - Sp. Kasturi</option>';
+            Nm_Ruas_options_str  += '<option value="Sp,Dukuhbadag - Sp.Tarikolot">Sp,Dukuhbadag - Sp.Tarikolot</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ancaran - Sp. Sindangsari (Sp. Jl. Lingkar Timur Selatan)">Sp. Ancaran - Sp. Sindangsari (Sp. Jl. Lingkar Timur Selatan)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Bandorasa Wetan - Sp. Linggarjati">Sp. Bandorasa Wetan - Sp. Linggarjati</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Caracas - Sp. Jalan Lingkar Timur">Sp. Caracas - Sp. Jalan Lingkar Timur</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cengal - Sp. Salareuma">Sp. Cengal - Sp. Salareuma</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ciawigebang - Sukadana">Sp. Ciawigebang - Sukadana</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cibeureum - Cimara">Sp. Cibeureum - Cimara</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cihideung Girang - Cihirup">Sp. Cihideung Girang - Cihirup</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cihideunggirang - Sp. Ciputat">Sp. Cihideunggirang - Sp. Ciputat</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cikaso - Karangmangu">Sp. Cikaso - Karangmangu</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cikeleng - Kalimati">Sp. Cikeleng - Kalimati</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cikeusal - Kd. Sukajaya">Sp. Cikeusal - Kd. Sukajaya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cilaja - Cilaja (Sp. Jl. Lingkar Timur)">Sp. Cilaja - Cilaja (Sp. Jl. Lingkar Timur)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cileuleuy - Sp. Sukamulya">Sp. Cileuleuy - Sp. Sukamulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cileuleuy/Kalpataru - Puncak (Mulya Asih)">Sp. Cileuleuy/Kalpataru - Puncak (Mulya Asih)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cileuya (Kiaradomba) - Cikeusik">Sp. Cileuya (Kiaradomba) - Cikeusik</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Cilimus (Pasar) - Sp. Jl. Lingkar Timur">Sp. Cilimus (Pasar) - Sp. Jl. Lingkar Timur</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ciniru (Sp. Jl. Lingkar Timur) - TPA Ciniru">Sp. Ciniru (Sp. Jl. Lingkar Timur) - TPA Ciniru</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ciniru - Cijemit">Sp. Ciniru - Cijemit</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ciniru - Cipedes/Kp. Cibongkot">Sp. Ciniru - Cipedes/Kp. Cibongkot</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ciniru - Tpsa Ciniru">Sp. Ciniru - Tpsa Ciniru</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Citangtu (Sp. Jl. Lingkar Timur - Selatan) - Purwasari">Sp. Citangtu (Sp. Jl. Lingkar Timur - Selatan) - Purwasari</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Citangtu - Cibinuang">Sp. Citangtu - Cibinuang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Citangtu - Sp. Jl Lingkar Timur Selatan">Sp. Citangtu - Sp. Jl Lingkar Timur Selatan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Darma - Sp.Sagarahiang">Sp. Darma - Sp.Sagarahiang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gagambiran - Dukuhpicung">Sp. Gagambiran - Dukuhpicung</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gewok - Cipedes">Sp. Gewok - Cipedes</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gresik - Bendungan">Sp. Gresik - Bendungan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gresik - Gunungkarung">Sp. Gresik - Gunungkarung</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gunungkarung - Kd. Margamukti">Sp. Gunungkarung - Kd. Margamukti</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Gunungkeling - Sp. Kalapagunung">Sp. Gunungkeling - Sp. Kalapagunung</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Japara - Koreak">Sp. Japara - Koreak</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Japara - Sp. Dusun Nampong Japara">Sp. Japara - Sp. Dusun Nampong Japara</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Jl Otista - Sp.Nangka">Sp. Jl Otista - Sp.Nangka</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kaduagung-Sp.Kertaungaran">Sp. Kaduagung-Sp.Kertaungaran</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kahiyangan - Pancalang">Sp. Kahiyangan - Pancalang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kahiyangan - Sp. Patalagan">Sp. Kahiyangan - Sp. Patalagan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kahiyangan - Sp. Silebu/Kp. Gardu">Sp. Kahiyangan - Sp. Silebu/Kp. Gardu</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kaliaren - Sp. Linggajati">Sp. Kaliaren - Sp. Linggajati</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kalimati - Loji">Sp. Kalimati - Loji</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Karangkancana - Jabranti">Sp. Karangkancana - Jabranti</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Karoya - Sp. Susukan">Sp. Karoya - Sp. Susukan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kayumanis (Cikaso) - Patala">Sp. Kayumanis (Cikaso) - Patala</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Kertawangunan - Sp. Windujanten (Jl. Lingkar Timur - Selatan)">Sp. Kertawangunan - Sp. Windujanten (Jl. Lingkar Timur - Selatan)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Linggajaya - Sagaranten">Sp. Linggajaya - Sagaranten</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Maleber - Pakembangan">Sp. Maleber - Pakembangan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Maleber - Sp. Cirukem">Sp. Maleber - Sp. Cirukem</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Maleber - Sp. Padamulya">Sp. Maleber - Sp. Padamulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Pagak Randusari - Sp. Simpajaya">Sp. Pagak Randusari - Sp. Simpajaya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Panawuan (Sp. Jl. Lingkar Timur) - Koreak">Sp. Panawuan (Sp. Jl. Lingkar Timur) - Koreak</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Panawuan - Indapatra">Sp. Panawuan - Indapatra</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Panawuan - Sp. Bandorasa Wetan">Sp. Panawuan - Sp. Bandorasa Wetan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Panawuan - Sp. Lingkar Timur">Sp. Panawuan - Sp. Lingkar Timur</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Pancalang - Silebu">Sp. Pancalang - Silebu</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Paniis - Cibuntu">Sp. Paniis - Cibuntu</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Peusing - Bandorasa Kulon">Sp. Peusing - Bandorasa Kulon</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Ragawacana - Pajambon">Sp. Ragawacana - Pajambon</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sagarahiang - Puncak">Sp. Sagarahiang - Puncak</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sagaranten - Margacina">Sp. Sagaranten - Margacina</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sampora - Sp. Cibeureum">Sp. Sampora - Sp. Cibeureum</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sangkanurip - Sp. Manislor">Sp. Sangkanurip - Sp. Manislor</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sangkanurip - Sp. Sangkanmulya">Sp. Sangkanurip - Sp. Sangkanmulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sembawa -  Sayana">Sp. Sembawa -  Sayana</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sembawa - Sp. Sadamantra">Sp. Sembawa - Sp. Sadamantra</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sidomba - Sp. Peusing">Sp. Sidomba - Sp. Peusing</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Silebu - Sp. Patalagan">Sp. Silebu - Sp. Patalagan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sindang Agung - Sp. Muncangela">Sp. Sindang Agung - Sp. Muncangela</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sindangsari - Kaduagung">Sp. Sindangsari - Kaduagung</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Sindangsari - Sp. Jl. Lingkar Timur Selatan">Sp. Sindangsari - Sp. Jl. Lingkar Timur Selatan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp. Windusengkahan - Desa">Sp. Windusengkahan - Desa</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Bantarpanjang - Leuwiasem (Bts,Kabupaten)">Sp.Bantarpanjang - Leuwiasem (Bts,Kabupaten)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Bayuning/Kalpataru - Sagarahiang">Sp.Bayuning/Kalpataru - Sagarahiang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cibingbin - Sp.Citenjo">Sp.Cibingbin - Sp.Citenjo</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cigedang - Sp. Cineumbeuy">Sp.Cigedang - Sp. Cineumbeuy</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cigintung Ciharendong - Sp.Ciarja">Sp.Cigintung Ciharendong - Sp.Ciarja</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cikadu - Sp.Ciherang">Sp.Cikadu - Sp.Ciherang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Ciketak - Sp. Bunigeulis">Sp.Ciketak - Sp. Bunigeulis</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cinagara - Sp. Dukuhpicung/Gandol">Sp.Cinagara - Sp. Dukuhpicung/Gandol</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cineumbeuy - Sp. Langseb">Sp.Cineumbeuy - Sp. Langseb</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Ciomas - Sp. Pangkalan">Sp.Ciomas - Sp. Pangkalan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cipakem - Sp. Patala">Sp.Cipakem - Sp. Patala</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cipedes Cibongkot - Pinara">Sp.Cipedes Cibongkot - Pinara</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Ciputat - Sp. Bendungan">Sp.Ciputat - Sp. Bendungan</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Cisantana - Sp. Babakan Mulya">Sp.Cisantana - Sp. Babakan Mulya</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Garatengah - Ancaran (Jl. Lingkar Timur)">Sp.Garatengah - Ancaran (Jl. Lingkar Timur)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Hantara - Cikondang">Sp.Hantara - Cikondang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Kapandayan - Sp.Ciawigebang">Sp.Kapandayan - Sp.Ciawigebang</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Mekarsari - Sp. Cipakem">Sp.Mekarsari - Sp. Cipakem</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Pakembangan - Kutakembaran">Sp.Pakembangan - Kutakembaran</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Pamulihan - Sp.Jatisari">Sp.Pamulihan - Sp.Jatisari</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Sampora - Garatengah (Jl. Lingkar Timur)">Sp.Sampora - Garatengah (Jl. Lingkar Timur)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Selajambe - Jamursi (Bts. Ciamis)">Sp.Selajambe - Jamursi (Bts. Ciamis)</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Sidaraja - Sp.Ciputat">Sp.Sidaraja - Sp.Ciputat</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Subang  - Situgede">Sp.Subang  - Situgede</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Subang - Sp. Situgede">Sp.Subang - Sp. Situgede</option>';
+            Nm_Ruas_options_str  += '<option value="Sp.Sukaharja - Sp.Sukamaju">Sp.Sukaharja - Sp.Sukamaju</option>';
+            Nm_Ruas_options_str  += '<option value="Sp; Lengkong - Tembong">Sp; Lengkong - Tembong</option>';
+            Nm_Ruas_options_str  += '<option value="Subang - Ciwaru">Subang - Ciwaru</option>';
+            Nm_Ruas_options_str  += '<option value="Subang - Tangkolo">Subang - Tangkolo</option>';
+            Nm_Ruas_options_str  += '<option value="Sukamaju - Bantarpanjang">Sukamaju - Bantarpanjang</option>';
+            Nm_Ruas_options_str  += '<option value="Sumbakeling - Cipinang">Sumbakeling - Cipinang</option>';
+            Nm_Ruas_options_str  += '<option value="Sumberjaya - Citundun">Sumberjaya - Citundun</option>';
+            Nm_Ruas_options_str  += '<option value="Sumberjaya - Lebakherang">Sumberjaya - Lebakherang</option>';
+            Nm_Ruas_options_str  += '<option value="Tajurbuntu - Pancalang">Tajurbuntu - Pancalang</option>';
+            Nm_Ruas_options_str  += '<option value="Tajurbuntu - Tenjolayar">Tajurbuntu - Tenjolayar</option>';
+            Nm_Ruas_options_str  += '<option value="Tambakbaya - Mekarwangi">Tambakbaya - Mekarwangi</option>';
+            Nm_Ruas_options_str  += '<option value="Taraju - Sp. Cikubangsari">Taraju - Sp. Cikubangsari</option>';
+            Nm_Ruas_options_str  += '<option value="Tenjolayar - Kubang">Tenjolayar - Kubang</option>';
+            Nm_Ruas_options_str  += '<option value="Tenjolayar - Sindangkempeng">Tenjolayar - Sindangkempeng</option>';
+            Nm_Ruas_options_str  += '<option value="Windusari-Kertayuga">Windusari-Kertayuga</option>';
+            sel_Nm_Ruas.innerHTML = Nm_Ruas_options_str;
+            div_Nm_Ruas.appendChild(sel_Nm_Ruas);
+            var lab_Nm_Ruas = document.createElement('div');
+            lab_Nm_Ruas.innerHTML = 'Nm_Ruas';
+            lab_Nm_Ruas.className = 'filterlabel';
+            div_Nm_Ruas.appendChild(lab_Nm_Ruas);
+            var reset_Nm_Ruas = document.createElement('div');
+            reset_Nm_Ruas.innerHTML = 'clear filter';
+            reset_Nm_Ruas.className = 'filterlabel';
+            reset_Nm_Ruas.onclick = function() {
+                var options = document.getElementById("sel_Nm_Ruas").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Nm_Ruas.appendChild(reset_Nm_Ruas);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Nm_Jembata = document.createElement('div');
+            div_Nm_Jembata.id = "div_Nm_Jembata";
+            div_Nm_Jembata.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Nm_Jembata);
+            sel_Nm_Jembata = document.createElement('select');
+            sel_Nm_Jembata.multiple = true;
+            sel_Nm_Jembata.size = 10;
+            sel_Nm_Jembata.id = "sel_Nm_Jembata";
+            var Nm_Jembata_options_str = "<option value='' unselected></option>";
+            sel_Nm_Jembata.onchange = function(){filterFunc()};
+            Nm_Jembata_options_str  += '<option value="BTS DESA PANCALANG">BTS DESA PANCALANG</option>';
+            Nm_Jembata_options_str  += '<option value="CAGEUR">CAGEUR</option>';
+            Nm_Jembata_options_str  += '<option value="CIAWI I">CIAWI I</option>';
+            Nm_Jembata_options_str  += '<option value="CIBACANG 2">CIBACANG 2</option>';
+            Nm_Jembata_options_str  += '<option value="CIBONGKOT 5">CIBONGKOT 5</option>';
+            Nm_Jembata_options_str  += '<option value="CICIAP 2">CICIAP 2</option>';
+            Nm_Jembata_options_str  += '<option value="CIGOLEMPANG">CIGOLEMPANG</option>';
+            Nm_Jembata_options_str  += '<option value="CIHERANG (BARU)">CIHERANG (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="CIJANTEL 2">CIJANTEL 2</option>';
+            Nm_Jembata_options_str  += '<option value="CILBAK 2">CILBAK 2</option>';
+            Nm_Jembata_options_str  += '<option value="CIMANIS 2">CIMANIS 2</option>';
+            Nm_Jembata_options_str  += '<option value="CIMENGA">CIMENGA</option>';
+            Nm_Jembata_options_str  += '<option value="CINISTI">CINISTI</option>';
+            Nm_Jembata_options_str  += '<option value="CIPAKEM II">CIPAKEM II</option>';
+            Nm_Jembata_options_str  += '<option value="CIPAKU 2">CIPAKU 2</option>';
+            Nm_Jembata_options_str  += '<option value="CIRANGTU 2">CIRANGTU 2</option>';
+            Nm_Jembata_options_str  += '<option value="CISOKA 2">CISOKA 2</option>';
+            Nm_Jembata_options_str  += '<option value="CISURIAN">CISURIAN</option>';
+            Nm_Jembata_options_str  += '<option value="CITANGTU">CITANGTU</option>';
+            Nm_Jembata_options_str  += '<option value="CITIKUR">CITIKUR</option>';
+            Nm_Jembata_options_str  += '<option value="DS BAOK I">DS BAOK I</option>';
+            Nm_Jembata_options_str  += '<option value="DS JABRANTI">DS JABRANTI</option>';
+            Nm_Jembata_options_str  += '<option value="DS JABRANTI 1">DS JABRANTI 1</option>';
+            Nm_Jembata_options_str  += '<option value="DS JABRANTI 2">DS JABRANTI 2</option>';
+            Nm_Jembata_options_str  += '<option value="DS WAGE">DS WAGE</option>';
+            Nm_Jembata_options_str  += '<option value="DUKUHJATI 2">DUKUHJATI 2</option>';
+            Nm_Jembata_options_str  += '<option value="DUKUHLOR">DUKUHLOR</option>';
+            Nm_Jembata_options_str  += '<option value="JATISARI">JATISARI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  BAGBAGAN">JBT.  BAGBAGAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBANGKA">JBT.  CIBANGKA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBATU">JBT.  CIBATU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBEBERA I">JBT.  CIBEBERA I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBERES">JBT.  CIBERES</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBEUREUM II">JBT.  CIBEUREUM II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIBODAS">JBT.  CIBODAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CICARINGIN">JBT.  CICARINGIN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIGEDE">JBT.  CIGEDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIGUNTENG (BARU)">JBT.  CIGUNTENG (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIJONTOR GIRANG">JBT.  CIJONTOR GIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIKAHURIPAN II">JBT.  CIKAHURIPAN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIKURUTUG">JBT.  CIKURUTUG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CILAMBANG II">JBT.  CILAMBANG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CILENGKRANG">JBT.  CILENGKRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CILODAS">JBT.  CILODAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CINIRU  I">JBT.  CINIRU  I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIOLOK">JBT.  CIOLOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIPARAI">JBT.  CIPARAI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIPAYUNG">JBT.  CIPAYUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIPEDAK II/TENTARA PELAJAR">JBT.  CIPEDAK II/TENTARA PELAJAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIPEUCEUK">JBT.  CIPEUCEUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CIRAHAYU">JBT.  CIRAHAYU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CISANDE">JBT.  CISANDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CISANGGARUNG">JBT.  CISANGGARUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CISEUREH II">JBT.  CISEUREH II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  CITUNDO">JBT.  CITUNDO</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  KALIMATI">JBT.  KALIMATI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  LEBOK HERANG(MINDI)">JBT.  LEBOK HERANG(MINDI)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  PATALAGAN">JBT.  PATALAGAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  RAGAWACANA I (BARU)">JBT.  RAGAWACANA I (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  WANAASIH (TIRTAWAHANA)">JBT.  WANAASIH (TIRTAWAHANA)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT.  WINDUSARI">JBT.  WINDUSARI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. ANUGRAH">JBT. ANUGRAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. AWIRARANGAN I">JBT. AWIRARANGAN I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. B.BK - III">JBT. B.BK - III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BAOK">JBT. BAOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BAROKAH">JBT. BAROKAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BATUKARUT">JBT. BATUKARUT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BOJONG LENGKONG">JBT. BOJONG LENGKONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BUNGUR BERES">JBT. BUNGUR BERES</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BUNI GEULIS">JBT. BUNI GEULIS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. BUYUT MEKAR">JBT. BUYUT MEKAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CAMPAKA">JBT. CAMPAKA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIAKAR">JBT. CIAKAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIAMBENG">JBT. CIAMBENG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIASEM">JBT. CIASEM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIAWI">JBT. CIAWI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIAWI GAJAH">JBT. CIAWI GAJAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIAWI II">JBT. CIAWI II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBACANG">JBT. CIBACANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBACANG I">JBT. CIBACANG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBALUKBUK">JBT. CIBALUKBUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBANGKA">JBT. CIBANGKA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBANGKA  II">JBT. CIBANGKA  II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBANGKA I">JBT. CIBANGKA I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBANGKA II">JBT. CIBANGKA II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBANJAR">JBT. CIBANJAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBARENGKOK">JBT. CIBARENGKOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBATU">JBT. CIBATU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBATU II">JBT. CIBATU II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBATUHURIP">JBT. CIBATUHURIP</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBAYONGBONG">JBT. CIBAYONGBONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBAYONGBONG II">JBT. CIBAYONGBONG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBAYONGBONG III">JBT. CIBAYONGBONG III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBEBEK">JBT. CIBEBEK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBEBERA">JBT. CIBEBERA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBEBERA II">JBT. CIBEBERA II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBELUT">JBT. CIBELUT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBENDA">JBT. CIBENDA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBERANI">JBT. CIBERANI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBERES">JBT. CIBERES</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBEUREUM">JBT. CIBEUREUM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBINUA CIPICUNG (BARU)">JBT. CIBINUA CIPICUNG (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBINUANG">JBT. CIBINUANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBIRU">JBT. CIBIRU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBITUNG">JBT. CIBITUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBODAS">JBT. CIBODAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBODAS HILIR">JBT. CIBODAS HILIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBOGOR I">JBT. CIBOGOR I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBOGOR II">JBT. CIBOGOR II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBONDOL">JBT. CIBONDOL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBONGKOT">JBT. CIBONGKOT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBONGKOT III">JBT. CIBONGKOT III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBONGKOT IV">JBT. CIBONGKOT IV</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBULAN">JBT. CIBULAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBULAN II">JBT. CIBULAN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBULUH">JBT. CIBULUH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUNGKANG">JBT. CIBUNGKANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUNGURSARANG">JBT. CIBUNGURSARANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUNI">JBT. CIBUNI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUNTU">JBT. CIBUNTU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUNUT">JBT. CIBUNUT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUREUYEUNG">JBT. CIBUREUYEUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBUREUYEUNG II (CIGUGUR I)">JBT. CIBUREUYEUNG II (CIGUGUR I)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIBURUGUJUL">JBT. CIBURUGUJUL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICABE">JBT. CICABE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICACABAN">JBT. CICACABAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICADAS">JBT. CICADAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICALODAS">JBT. CICALODAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICAPAR">JBT. CICAPAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICAPAR II">JBT. CICAPAR II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CICIAP">JBT. CICIAP</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDADALI">JBT. CIDADALI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDANGDANGRAT">JBT. CIDANGDANGRAT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDAWOLONG">JBT. CIDAWOLONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDAWUAN">JBT. CIDAWUAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDOHDOR (CIPINANG)">JBT. CIDOHDOR (CIPINANG)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIDULANG">JBT. CIDULANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGANGGOR">JBT. CIGANGGOR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGANGGOR II">JBT. CIGANGGOR II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGANTUNG">JBT. CIGANTUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGANYONG">JBT. CIGANYONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGARUGUY">JBT. CIGARUGUY</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGARUKGAK">JBT. CIGARUKGAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGAWIR">JBT. CIGAWIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGEMBANG">JBT. CIGEMBANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGEURENG">JBT. CIGEURENG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGEURENG - BARU">JBT. CIGEURENG - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGEWOK">JBT. CIGEWOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGINTUNG">JBT. CIGINTUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGIRANG">JBT. CIGIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGOLAT">JBT. CIGOLAT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIGOLO">JBT. CIGOLO</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHAMBAR">JBT. CIHAMBAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHANYIR">JBT. CIHANYIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHAUR">JBT. CIHAUR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHAWANGAN GEDE">JBT. CIHAWANGAN GEDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHEJO I">JBT. CIHEJO I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHEJO II">JBT. CIHEJO II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHERANG">JBT. CIHERANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHERANG I">JBT. CIHERANG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHERANG II">JBT. CIHERANG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHIEUM">JBT. CIHIEUM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHIEUM II - BARU">JBT. CIHIEUM II - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHIPU">JBT. CIHIPU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHOE">JBT. CIHOE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHOE II">JBT. CIHOE II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHONJE">JBT. CIHONJE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIHURANG">JBT. CIHURANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIINJUK">JBT. CIINJUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJAMBU">JBT. CIJAMBU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJANGGOT">JBT. CIJANGGOT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJANGKELOK">JBT. CIJANGKELOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJANGKELOK I">JBT. CIJANGKELOK I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJANGKELOK II">JBT. CIJANGKELOK II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJANTEL">JBT. CIJANTEL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJARAK - BARU">JBT. CIJARAK - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJATI I">JBT. CIJATI I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJATI II">JBT. CIJATI II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJOHO">JBT. CIJOHO</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJOLANG">JBT. CIJOLANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJUBEL">JBT. CIJUBEL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJURAY">JBT. CIJURAY</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIJUREY">JBT. CIJUREY</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKADEMANGAN">JBT. CIKADEMANGAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKAHURIPAN III">JBT. CIKAHURIPAN III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKALAPA">JBT. CIKALAPA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKALI">JBT. CIKALI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKALONG">JBT. CIKALONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKALONG II">JBT. CIKALONG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKAMALAYAN">JBT. CIKAMALAYAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKAMALAYAN/CIBANGKA  I">JBT. CIKAMALAYAN/CIBANGKA  I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKAPAHINGAN">JBT. CIKAPAHINGAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKARANG">JBT. CIKARANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKARO">JBT. CIKARO</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKARO II">JBT. CIKARO II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKASO (BARU)">JBT. CIKASO (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKATEL I">JBT. CIKATEL I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKAWAREG">JBT. CIKAWAREG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKECREK">JBT. CIKECREK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEMBANG">JBT. CIKEMBANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEMBANGBUNGUR">JBT. CIKEMBANGBUNGUR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKENDAN">JBT. CIKENDAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKENTRUNGAN">JBT. CIKENTRUNGAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEREMEONG">JBT. CIKEREMEONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKETAK">JBT. CIKETAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEUSIK">JBT. CIKEUSIK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEUYEP">JBT. CIKEUYEP</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKEUYEUP">JBT. CIKEUYEUP</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKIARA">JBT. CIKIARA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKOLE">JBT. CIKOLE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKOLOT">JBT. CIKOLOT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKONDANG">JBT. CIKONDANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKONDANG I">JBT. CIKONDANG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKONENG">JBT. CIKONENG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKOREAK I">JBT. CIKOREAK I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKORONJO">JBT. CIKORONJO</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKUDA">JBT. CIKUDA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKULUTUK">JBT. CIKULUTUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKULUTUK II">JBT. CIKULUTUK II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKULUWUT">JBT. CIKULUWUT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKURUTUG">JBT. CIKURUTUG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKUYA">JBT. CIKUYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIKUYU">JBT. CIKUYU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILAGADAR">JBT. CILAGADAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILAJA  I (BARU)">JBT. CILAJA  I (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILAMBANG I">JBT. CILAMBANG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILANGKAP">JBT. CILANGKAP</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILANGKAP GIRANG">JBT. CILANGKAP GIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEBAK">JBT. CILEBAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEMBU">JBT. CILEMBU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILENGKRANG">JBT. CILENGKRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILENGLI">JBT. CILENGLI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUBAK">JBT. CILEUBAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUDUG">JBT. CILEUDUG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUMA">JBT. CILEUMA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUNGSIR">JBT. CILEUNGSIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUSANG">JBT. CILEUSANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUWEUNG">JBT. CILEUWEUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILEUYA GIRANG">JBT. CILEUYA GIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILIMUS">JBT. CILIMUS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILOA GEDE">JBT. CILOA GEDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILODAS II">JBT. CILODAS II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILODAS III">JBT. CILODAS III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILOWA">JBT. CILOWA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILULUNG">JBT. CILULUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILUSIH">JBT. CILUSIH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILUWUK">JBT. CILUWUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CILUWUK II">JBT. CILUWUK II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMAHI">JBT. CIMAHI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMAJA">JBT. CIMAJA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMANDALA">JBT. CIMANDALA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMANIS">JBT. CIMANIS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMANIS  II">JBT. CIMANIS  II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMANIS HILIR">JBT. CIMANIS HILIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMANIS II">JBT. CIMANIS II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMARILIT">JBT. CIMARILIT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMENGA">JBT. CIMENGA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMONTE">JBT. CIMONTE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMULYA">JBT. CIMULYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMUNCANG">JBT. CIMUNCANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIMUNCANG (BARU)">JBT. CIMUNCANG (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CINANGKA">JBT. CINANGKA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CINATUH">JBT. CINATUH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CINIRU I">JBT. CINIRU I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CINUNGGUL">JBT. CINUNGGUL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIOLOK">JBT. CIOLOK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIOLOK I">JBT. CIOLOK I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIOLOK II">JBT. CIOLOK II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIOMAS">JBT. CIOMAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAGAK">JBT. CIPAGAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAGER">JBT. CIPAGER</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAHING">JBT. CIPAHING</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAKEM">JBT. CIPAKEM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAKU">JBT. CIPAKU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAKU II">JBT. CIPAKU II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPALIPIR">JBT. CIPALIPIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPAMURUYAN (BARU)">JBT. CIPAMURUYAN (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPANAS">JBT. CIPANAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPANGKAL">JBT. CIPANGKAL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPANIIS">JBT. CIPANIIS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPANIIS II">JBT. CIPANIIS II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPANJANG">JBT. CIPANJANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPARAY">JBT. CIPARAY</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPARAY II">JBT. CIPARAY II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPASEK">JBT. CIPASEK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPATUJAH">JBT. CIPATUJAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPEDAK">JBT. CIPEDAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPEDES">JBT. CIPEDES</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPENDAK GIRANG">JBT. CIPENDAK GIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPETIR">JBT. CIPETIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPICUNG">JBT. CIPICUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPICUNG II">JBT. CIPICUNG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPICUNG III">JBT. CIPICUNG III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPICUNG IV">JBT. CIPICUNG IV</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPICUNG V">JBT. CIPICUNG V</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPINANG">JBT. CIPINANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPOGOR">JBT. CIPOGOR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPOGOR I">JBT. CIPOGOR I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPOGOR II">JBT. CIPOGOR II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPORANG">JBT. CIPORANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIPULUS">JBT. CIPULUS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRACAS">JBT. CIRACAS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRAGA  I">JBT. CIRAGA  I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRAGEUNG">JBT. CIRAGEUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRAHAYU">JBT. CIRAHAYU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRANGKOB">JBT. CIRANGKOB</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRANGKONG">JBT. CIRANGKONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIREMBAY">JBT. CIREMBAY</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIREMBAY  II">JBT. CIREMBAY  II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRENDANG">JBT. CIRENDANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIRUUM">JBT. CIRUUM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISAAT I">JBT. CISAAT I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISALAK">JBT. CISALAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISANDE">JBT. CISANDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISANGGARUNG">JBT. CISANGGARUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISANGGARUNG - II (BARU)">JBT. CISANGGARUNG - II (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISANGGARUNG I">JBT. CISANGGARUNG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISANGGARUNG II">JBT. CISANGGARUNG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISEDA">JBT. CISEDA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISEUPAN">JBT. CISEUPAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISEUREH">JBT. CISEUREH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISEUREUH">JBT. CISEUREUH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISIRGADING">JBT. CISIRGADING</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISOKA">JBT. CISOKA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISUBANG">JBT. CISUBANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CISURIAN">JBT. CISURIAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAAL">JBT. CITAAL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITADIM">JBT. CITADIM</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMAN">JBT. CITAMAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBA">JBT. CITAMBA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBA GIRANG">JBT. CITAMBA GIRANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBA HILIR">JBT. CITAMBA HILIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBA III">JBT. CITAMBA III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBA PS. BARU">JBT. CITAMBA PS. BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMBLEG">JBT. CITAMBLEG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITAMIANG">JBT. CITAMIANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITANGGULUN">JBT. CITANGGULUN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITANGTU (BARU)">JBT. CITANGTU (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITERONG">JBT. CITERONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITIIS">JBT. CITIIS</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITIKUR">JBT. CITIKUR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITIPUNG">JBT. CITIPUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITUNDUN II">JBT. CITUNDUN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITUNDUN III">JBT. CITUNDUN III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITUNDUN IV">JBT. CITUNDUN IV</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITUNDUN V">JBT. CITUNDUN V</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CITUNGSANG">JBT. CITUNGSANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIUYAH">JBT. CIUYAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIWARINGIN">JBT. CIWARINGIN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIWASIAT">JBT. CIWASIAT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIWETANG">JBT. CIWETANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. CIWIRU">JBT. CIWIRU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DALIM HILIR">JBT. DALIM HILIR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DAMPING I">JBT. DAMPING I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DAMPING II">JBT. DAMPING II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DANALAMPAH">JBT. DANALAMPAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DANGDEUR I">JBT. DANGDEUR I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DANGDEUR II">JBT. DANGDEUR II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DAWUAN">JBT. DAWUAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DUKUH JATI">JBT. DUKUH JATI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DUKUHAWI">JBT. DUKUHAWI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DUKUHAWI II">JBT. DUKUHAWI II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. DUKUHAWI III">JBT. DUKUHAWI III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. EYANG WERI">JBT. EYANG WERI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GAGAMBIRAN">JBT. GAGAMBIRAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GANDASOLI">JBT. GANDASOLI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GARAWANGI (BARU)">JBT. GARAWANGI (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GETASAN">JBT. GETASAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GUNUNG ACI">JBT. GUNUNG ACI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GUNUNG MANIK">JBT. GUNUNG MANIK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. GUNUNGSARI">JBT. GUNUNGSARI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. HANTARA  I">JBT. HANTARA  I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. HANTARA II">JBT. HANTARA II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. HANTARA III">JBT. HANTARA III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. HAURDUNI">JBT. HAURDUNI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. JAMURISI">JBT. JAMURISI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. JBT. SITU">JBT. JBT. SITU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KADUGEDE (BARU)">JBT. KADUGEDE (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KALPATARU">JBT. KALPATARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KARANGANYAR">JBT. KARANGANYAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KARANGSAMBUNG CIGEDE">JBT. KARANGSAMBUNG CIGEDE</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KEMBANG RUMPUNG">JBT. KEMBANG RUMPUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KERAMAT HAJI">JBT. KERAMAT HAJI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KERTAYUGA">JBT. KERTAYUGA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KERTAYUGA  II">JBT. KERTAYUGA  II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KIARAKONENG">JBT. KIARAKONENG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KIARAKONENG II - BARU">JBT. KIARAKONENG II - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KOJENGKANG BABAKAN">JBT. KOJENGKANG BABAKAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KONDANG MEKAR I">JBT. KONDANG MEKAR I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KOREAK">JBT. KOREAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KPK">JBT. KPK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KRAMATMULYA I (BARU)">JBT. KRAMATMULYA I (BARU)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. KUTAKEMBARAN">JBT. KUTAKEMBARAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEBAK">JBT. LEBAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEBAK CIWARU">JBT. LEBAK CIWARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEBAK HERANG">JBT. LEBAK HERANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEBAK SAGUR">JBT. LEBAK SAGUR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEBOK HERANG II">JBT. LEBOK HERANG II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEUWILAWANG">JBT. LEUWILAWANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEUWISEPUH">JBT. LEUWISEPUH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LEUWISEPUH II">JBT. LEUWISEPUH II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LKR BAYUNING">JBT. LKR BAYUNING</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LKR BAYUNING II">JBT. LKR BAYUNING II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. LONGKEWANG">JBT. LONGKEWANG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MANUNGGAL">JBT. MANUNGGAL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MARGAMUKTI">JBT. MARGAMUKTI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MAYUNG">JBT. MAYUNG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MEKAR JAYA">JBT. MEKAR JAYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MERAH">JBT. MERAH</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MUHARA">JBT. MUHARA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MULYAJAYA">JBT. MULYAJAYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. MUNCANGELA">JBT. MUNCANGELA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. NANGGORAK">JBT. NANGGORAK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PADAMULYA">JBT. PADAMULYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PALUTUNGAN I">JBT. PALUTUNGAN I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PAMUPUKAN I (CIPEDES)">JBT. PAMUPUKAN I (CIPEDES)</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PAMUPUKAN II">JBT. PAMUPUKAN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PANGKALAN">JBT. PANGKALAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PARAKAN">JBT. PARAKAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PARAKAN II">JBT. PARAKAN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PASANGGRAHAN">JBT. PASANGGRAHAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PURWASARI I">JBT. PURWASARI I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PURWASARI II">JBT. PURWASARI II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. PURWASARI III">JBT. PURWASARI III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. RANDUSARI">JBT. RANDUSARI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SADAMANTRA">JBT. SADAMANTRA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SAGARANTEN">JBT. SAGARANTEN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SALAJAN - BARU">JBT. SALAJAN - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SEGONG">JBT. SEGONG</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SELOKAN">JBT. SELOKAN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SEMENTARA/BANTARPANJANG I">JBT. SEMENTARA/BANTARPANJANG I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SILIWANGI">JBT. SILIWANGI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SINDANG JAWA">JBT. SINDANG JAWA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SINYUR">JBT. SINYUR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKADERI">JBT. SUKADERI</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKARAJA">JBT. SUKARAJA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKARNO I">JBT. SUKARNO I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKARNO II">JBT. SUKARNO II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKARNO III">JBT. SUKARNO III</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKUN I">JBT. SUKUN I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUKUN II">JBT. SUKUN II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SUMBER JAYA">JBT. SUMBER JAYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SURAKATIGA">JBT. SURAKATIGA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SURAKATIGA I">JBT. SURAKATIGA I</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. SURAKATIGA II">JBT. SURAKATIGA II</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TANJUNG KERTA">JBT. TANJUNG KERTA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TARIKOLOT">JBT. TARIKOLOT</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TENJOLAYAR">JBT. TENJOLAYAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TENTARA PELAJAR">JBT. TENTARA PELAJAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TJIHAMBAR">JBT. TJIHAMBAR</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TJIKATEL">JBT. TJIKATEL</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TJIKATEL II - BARU">JBT. TJIKATEL II - BARU</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TJIMANUK">JBT. TJIMANUK</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TJITANGGULUN">JBT. TJITANGGULUN</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. TRIJAYA">JBT. TRIJAYA</option>';
+            Nm_Jembata_options_str  += '<option value="JBT. WINDUSARI II">JBT. WINDUSARI II</option>';
+            Nm_Jembata_options_str  += '<option value="KARANGKANCANA">KARANGKANCANA</option>';
+            Nm_Jembata_options_str  += '<option value="LAMPINGKALER">LAMPINGKALER</option>';
+            Nm_Jembata_options_str  += '<option value="LEBAKSAEUR 2">LEBAKSAEUR 2</option>';
+            Nm_Jembata_options_str  += '<option value="LEBAKSAEUR 3">LEBAKSAEUR 3</option>';
+            Nm_Jembata_options_str  += '<option value="MEKARSARI">MEKARSARI</option>';
+            Nm_Jembata_options_str  += '<option value="PAGEUR BATU">PAGEUR BATU</option>';
+            Nm_Jembata_options_str  += '<option value="PAKAPASAN">PAKAPASAN</option>';
+            Nm_Jembata_options_str  += '<option value="PINARA">PINARA</option>';
+            Nm_Jembata_options_str  += '<option value="RANDOBAWAILIR">RANDOBAWAILIR</option>';
+            Nm_Jembata_options_str  += '<option value="RANDOBAWAILIR 2">RANDOBAWAILIR 2</option>';
+            Nm_Jembata_options_str  += '<option value="SILEBU">SILEBU</option>';
+            Nm_Jembata_options_str  += '<option value="SINDANG">SINDANG</option>';
+            Nm_Jembata_options_str  += '<option value="SINDANGAGUNG">SINDANGAGUNG</option>';
+            Nm_Jembata_options_str  += '<option value="SINDANGJAWA">SINDANGJAWA</option>';
+            Nm_Jembata_options_str  += '<option value="SOEKARNO">SOEKARNO</option>';
+            Nm_Jembata_options_str  += '<option value="SUKAMUKTI">SUKAMUKTI</option>';
+            Nm_Jembata_options_str  += '<option value="SUSUKAN">SUSUKAN</option>';
+            Nm_Jembata_options_str  += '<option value="TJIMANIA">TJIMANIA</option>';
+            sel_Nm_Jembata.innerHTML = Nm_Jembata_options_str;
+            div_Nm_Jembata.appendChild(sel_Nm_Jembata);
+            var lab_Nm_Jembata = document.createElement('div');
+            lab_Nm_Jembata.innerHTML = 'Nm_Jembata';
+            lab_Nm_Jembata.className = 'filterlabel';
+            div_Nm_Jembata.appendChild(lab_Nm_Jembata);
+            var reset_Nm_Jembata = document.createElement('div');
+            reset_Nm_Jembata.innerHTML = 'clear filter';
+            reset_Nm_Jembata.className = 'filterlabel';
+            reset_Nm_Jembata.onclick = function() {
+                var options = document.getElementById("sel_Nm_Jembata").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Nm_Jembata.appendChild(reset_Nm_Jembata);
+        </script>
+    </body>
+</html>
